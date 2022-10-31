@@ -1,0 +1,42 @@
+%card {
+    display: grid;
+    //Sub-grid so icon is on column 1 and text is on column 2
+    grid-template-columns: min-content 1fr;
+    grid-row-gap: 1.5rem;
+    grid-column-gap: 2.5rem;
+    border-style: solid;
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+.body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-row: 3 / 5;
+    grid-gap: 2rem;
+    margin: 2rem;
+
+    &__card {
+        @extend %card;
+        grid-column: 2;
+    }
+
+    &__card-large {
+        @extend %card;
+        grid-column: 1;
+        grid-row: span 2;
+    }
+
+    &__icon {
+        fill: $color-primary;
+        width: 4.5rem;
+        height: 4.5rem;
+        //Specify that icon takes up two rows
+        grid-row: 1 / span 2;
+        transform: translateY(-1rem);
+    }
+    
+    &__text {
+        font-size: 1.2rem;
+    }
+}
