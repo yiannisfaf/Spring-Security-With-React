@@ -1,35 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ACCESS_TOKEN, login } from '../../util/api';
 import { Link, useNavigate } from "react-router-dom";
+import { TStore, useAppDispatch } from '../../store';
+import { useSelector } from 'react-redux';
+import { userLogin, LoginRequest } from '../../actions/userActions';
 
-
-export interface LoginReqeust {
-    usernameOrEmail: string;
-    password: string;
-}
 
 function Login() {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const { loading, error, userToken } = useSelector((state: TStore) => state.user);
+
+    useEffect(() => {
+        // redirect user to main if login was successful
+        if (userToken) navigate('/');
+    }, [navigate, userToken]);
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
-        const loginRequest = {} as LoginReqeust;
+        const loginRequest = {} as LoginRequest;
         loginRequest.usernameOrEmail = event.target[0].value;
         loginRequest.password = event.target[1].value;
 
-        login(loginRequest)
-        .then((res: any) => {
-            localStorage.setItem(ACCESS_TOKEN, res.accessToken);
-            navigate("/");
-        }).catch(error => {
-            console.log(error, error.status);
-            //TODO: Figure out error handling
-            if(error.status === 401) {
-                return <div className="error">Your Username or Password is incorrect. Please try again!</div>                 
-            } else {
-                return <div className="error">{error.message}</div>                                                          
-            }
-        });
+        dispatch(userLogin(loginRequest));
     }
 
     return (
@@ -56,6 +49,16 @@ function Login() {
                         <button className="btn btn--green">Log In &rarr;</button>
                     </div>
                 </form>
+
+                {
+                error ?
+                    <div className="error">
+                        <div className="error__text">
+                            {error}
+                        </div>
+                    </div> : <></>
+                }
+                
 
                 <div className="signup">
                     <Link to='/signup'>Don't have an account? Sign Up</Link>

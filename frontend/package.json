@@ -12,7 +12,6 @@
     "@types/node": "^16.11.66",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
-    "@types/react-redux": "^7.1.24",
     "ag-grid-community": "^28.2.0",
     "ag-grid-react": "^28.2.0",
     "eslint": "^8.25.0",

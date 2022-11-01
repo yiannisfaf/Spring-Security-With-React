@@ -1,0 +1,10 @@
+.error {
+    margin-top: 2.5rem;
+    border-radius: 1rem;
+    background-color: red;
+
+    &__text {
+        padding-left: 1rem;
+        color: white;
+    }
+}

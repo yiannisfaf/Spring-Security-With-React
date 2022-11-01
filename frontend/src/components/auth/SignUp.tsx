@@ -1,17 +1,18 @@
-import React from 'react';
-import { ACCESS_TOKEN, signup } from '../../util/api';
+import React, { useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
-
-export interface SignUpRequest {
-    firstName: string;
-    lastName: string;
-    username: string;
-    email: string;
-    password: string;
-}
+import { useSelector } from 'react-redux';
+import { registerUser, SignUpRequest } from '../../actions/userActions';
+import { TStore, useAppDispatch } from '../../store';
 
 function SignUp() {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const { loading, success, error } = useSelector((state: TStore) => state.user);
+
+    useEffect(() => {
+        // redirect user to login page if registration was successful
+        if (success) navigate('/login');
+    }, [navigate, success]);
 
     const handleSubmit = (event: any) => {
         event.preventDefault();
@@ -23,19 +24,7 @@ function SignUp() {
         signUpRequest.password = event.target[4].value;
 
 
-        signup(signUpRequest)
-        .then((res: any) => {
-            localStorage.setItem(ACCESS_TOKEN, res.accessToken);
-            navigate("/");
-        }).catch(error => {
-            //TODO: Figure out error handling
-            console.log('error', error);
-            if(error.status === 401) {
-                return <div className="error">Your Username or Password is incorrect. Please try again!</div>                 
-            } else {
-                return <div className="error">{error.message}</div>                                                          
-            }
-        });
+        dispatch(registerUser(signUpRequest));
     }
 
     return (
@@ -74,8 +63,17 @@ function SignUp() {
                     </div>
 
                     <div className="form__group">
-                        <button className="btn btn--green">Log In &rarr;</button>
+                        <button className="btn btn--green">Sign Up &rarr;</button>
                     </div>
+
+                    {
+                        error ?
+                        <div className="error">
+                            <div className="error__text">
+                                {error}
+                            </div>
+                        </div> : <></>
+                    }
                 </form>
             </div>
         </div>
